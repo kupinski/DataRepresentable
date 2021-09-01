@@ -1,5 +1,6 @@
 import XCTest
 @testable import DataRepresentable
+import simd
 
 final class NumericDataTests: XCTestCase {
     func testScalars() throws {
@@ -37,5 +38,39 @@ final class NumericDataTests: XCTestCase {
         let int8Data = [Int8]([127, -127, 12, -12]).dataRepresentation
         let dataToInt8 = [Int8](fromData: int8Data)
         XCTAssertEqual([Int8]([127, -127, 12, -12]), dataToInt8)
+    }
+    
+    func testSIMD() throws {
+        do {
+            let simdData = SIMD3<Double>(1,-100,312).dataRepresentation
+            let simd = SIMD3<Double>(fromData: simdData)
+            XCTAssertEqual(SIMD3<Double>(1,-100,312), simd)
+        }
+        do {
+            let simdData = SIMD3<Float>(1,-100,312).dataRepresentation
+            let simd = SIMD3<Float>(fromData: simdData)
+            XCTAssertEqual(SIMD3<Float>(1,-100,312), simd)
+        }
+        do {
+            let simdData = SIMD3<Int>(1,-100,312).dataRepresentation
+            let simd = SIMD3<Int>(fromData: simdData)
+            XCTAssertEqual(SIMD3<Int>(1,-100,312), simd)
+        }
+        do {
+            let simdData = SIMD2<Double>(1,-100).dataRepresentation
+            let simd = SIMD2<Double>(fromData: simdData)
+            XCTAssertEqual(SIMD2<Double>(1,-100), simd)
+        }
+        do {
+            let simdData = SIMD2<Float>(1,-100).dataRepresentation
+            let simd = SIMD2<Float>(fromData: simdData)
+            XCTAssertEqual(SIMD2<Float>(1,-100), simd)
+        }
+        do {
+            let simdData = SIMD2<Int>(1,-100).dataRepresentation
+            let simd = SIMD2<Int>(fromData: simdData)
+            XCTAssertEqual(SIMD2<Int>(1,-100), simd)
+        }
+        
     }
 }
