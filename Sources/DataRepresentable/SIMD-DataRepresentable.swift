@@ -25,9 +25,13 @@ extension SIMD  {
     }
 }
 
-extension SIMD3 : DataRepresentable {}
 extension SIMD2 : DataRepresentable {}
+extension SIMD3 : DataRepresentable {}
 extension SIMD4 : DataRepresentable {}
+extension SIMD8 : DataRepresentable {}
+extension SIMD16 : DataRepresentable {}
+extension SIMD32 : DataRepresentable {}
+extension SIMD64 : DataRepresentable {}
 
 //extension SIMD where Self.Scalar : FixedWidthInteger {
 //    /// Convert a numeric value to `Data`.

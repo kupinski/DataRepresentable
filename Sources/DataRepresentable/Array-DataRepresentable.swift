@@ -21,7 +21,9 @@ extension Array: DataRepresentable where Element: DataRepresentable {
     
     
     /// Create an array from `Data`
-    /// - Parameter data: The `Data` to convert to an array
+    ///
+    /// For non-array types `data` only the first `MemoryLayout<Element>.stride` bytes are uesd.  For an `Array`, we assume that ALL of the passed `data` is meant to be converted into `[Element]`.
+    /// - Parameter data: The `Data` to convert to an array.
     public init(fromData data: Data) {
         let newCount = data.count / MemoryLayout<Element>.stride
         self = Array(unsafeUninitializedCapacity: newCount,

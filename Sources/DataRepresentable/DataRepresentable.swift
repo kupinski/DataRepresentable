@@ -13,6 +13,9 @@ import Foundation
 ///
 ///  To conform to individual elements as well as array being `DataRepresentable`, we use the `MemoryLayout<T>.size` command when converting individual elements into `Data` and use `MemoryLayout<T>.size` to size elements in an array. 
 public protocol DataRepresentable {
+    /// Create a `DataRepresentable` from `Data`.  
+    init(fromData data: Data)
+    
     /// Convert the object to `Data`
     var dataRepresentation: Data { get }
     

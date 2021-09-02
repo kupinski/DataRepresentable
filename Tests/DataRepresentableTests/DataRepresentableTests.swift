@@ -71,6 +71,35 @@ final class NumericDataTests: XCTestCase {
             let simd = SIMD2<Int>(fromData: simdData)
             XCTAssertEqual(SIMD2<Int>(1,-100), simd)
         }
+        do {
+            let simdData = SIMD2<Int8>(1,-100).dataRepresentation
+            let simd = SIMD2<Int8>(fromData: simdData)
+            XCTAssertEqual(SIMD2<Int8>(1,-100), simd)
+        }
+
+    }
+    
+    
+    func testProcess() throws {
+        do {
+            var intAData = [0, 1, 2, 3, 10000, -1000, 5123112].dataRepresentation
+            let vals: [Int] = intAData.process(count: 7)
+            XCTAssertEqual([0, 1, 2, 3, 10000, -1000, 5123112], vals)
+        }
+        do {
+            var intAData = [0, 1, 2, 3, 10000, -1000, 5123112].dataRepresentation
+            let vals: [Int] = intAData.process(count: 6)
+            XCTAssertEqual([0, 1, 2, 3, 10000, -1000], vals)
+            let val: Int = intAData.process()
+            XCTAssertEqual(5123112, val)
+        }
+        do {
+            var intAData = [0, 1, 2, 3, 10000, -1000, 5123112].dataRepresentation
+            let vals: [Int] = intAData.process(count: 8)
+            XCTAssertEqual(vals.count, 7)
+        }
+
         
     }
+    
 }
