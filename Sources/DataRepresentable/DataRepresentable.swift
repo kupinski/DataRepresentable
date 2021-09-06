@@ -16,10 +16,6 @@ public protocol DataRepresentable {
     /// Create a `DataRepresentable` from `Data`.  
     init?(fromData data: inout Data)
     
-//    /// Convert data to `DataRepresentable`
-//    /// - Returns: A tuple of the value read (or nil if the read fails), and an integer number of bytes read from the `Data`
-//    static func readFromData(data: Data, count: Int) -> ([Self]?, Int)
-
     /// Create a `DataRepresentable` from a file.
     ///
     /// Has a default implementation.  Assumes that the entire file is meant for the `DataRepresentable`.  Any extra bytes in the file are ignored.
