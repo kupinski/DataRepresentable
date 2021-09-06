@@ -19,9 +19,10 @@ extension String: DataRepresentable {
     /// Process a string from a data stream
     ///
     /// This is generally thought of as not safe.
-    public init(fromData data: inout Data) {
+    public init?(fromData data: inout Data) {
         let subData = data.prefix(while: {(tst) in tst != 0})
-        self.init(data: subData, encoding: .utf8)!
+        self.init(data: subData, encoding: .utf8)
+        // FIXME:  How do I not advance when the initializer returns nil??
         data = data.advanced(by: subData.count + 1) // +1 to get past the null termination
     }
 }
