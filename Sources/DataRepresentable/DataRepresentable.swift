@@ -14,13 +14,38 @@ import Foundation
 ///  To conform to individual elements as well as array being `DataRepresentable`, we use the `MemoryLayout<T>.size` command when converting individual elements into `Data` and use `MemoryLayout<T>.size` to size elements in an array. 
 public protocol DataRepresentable {
     /// Create a `DataRepresentable` from `Data`.  
-    init(fromData data: Data)
+    init?(fromData data: inout Data)
     
+//    /// Convert data to `DataRepresentable`
+//    /// - Returns: A tuple of the value read (or nil if the read fails), and an integer number of bytes read from the `Data`
+//    static func readFromData(data: Data, count: Int) -> ([Self]?, Int)
+
+    /// Create a `DataRepresentable` from a file.
+    ///
+    /// Has a default implementation.  Assumes that the entire file is meant for the `DataRepresentable`.  Any extra bytes in the file are ignored.
+    init?(fromURL url: URL) throws
+    
+    /// Write the `DataRepresentable` to a file.
+    ///
+    /// Has a default implementation.
+    func write(toURL url: URL) throws
+
+
     /// Convert the object to `Data`
     var dataRepresentation: Data { get }
+}
+
+
+extension DataRepresentable {
+    public init?(fromURL url: URL) throws {
+        var data = try Data(contentsOf: url)
+        self.init(fromData: &data)
+    }
     
-    /// A static variable that describes the number of bytes allocated per entry
-    static var dataStride: Int { get }
+    public func write(toURL url: URL) throws {
+        try self.dataRepresentation.write(to: url)
+    }
+    
 }
 
 

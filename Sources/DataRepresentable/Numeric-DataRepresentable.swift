@@ -11,17 +11,17 @@ extension Numeric {
 
     
     /// Initialze a single numeric value from `Data`
-    public init(fromData data: Data) {
+    public init?(fromData data: inout Data) {
+        if (data.count < MemoryLayout<Self>.stride) {
+            return nil
+        }
         var value: Self = .zero
-        let size = withUnsafeMutableBytes(of: &value, { data.copyBytes(to: $0)} )
-        assert(size == MemoryLayout.size(ofValue: value))
+        let numBytes = withUnsafeMutableBytes(of: &value, { data.copyBytes(to: $0)} )
+        data = data.advanced(by: numBytes)
+
         self = value
     }
     
-    /// The dataStride for the `DataRepresentable`.
-    static public var dataStride: Int {
-        return MemoryLayout< Self >.stride
-    }
 }
 
 // We must do this to all the Numeric types to ensure that they do follow DataRepresentable
@@ -34,6 +34,7 @@ extension Int64: DataRepresentable {}
 extension Int32: DataRepresentable {}
 extension Int16: DataRepresentable {}
 extension Int8: DataRepresentable {}
+
 extension UInt: DataRepresentable {}
 extension UInt64: DataRepresentable {}
 extension UInt32: DataRepresentable {}

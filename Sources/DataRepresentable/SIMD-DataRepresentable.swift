@@ -15,14 +15,14 @@ extension SIMD  {
         return .init(bytes: &source, count: MemoryLayout<Self>.stride)
     }
 
-    public init(fromData data: Data) {
+    public init?(fromData data: inout Data) {
+        if (data.count < MemoryLayout<Self>.stride) {
+            return nil
+        }
         self =  data.withUnsafeBytes( {$0.load(as: Self.self)})
+        data = data.advanced(by: MemoryLayout<Self>.stride)
     }
     
-    /// The dataStride for the `DataRepresentable`.
-    static public var dataStride: Int {
-        return MemoryLayout< Self >.stride
-    }
 }
 
 extension SIMD2 : DataRepresentable {}
