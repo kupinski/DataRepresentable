@@ -14,7 +14,9 @@ extension SIMD  {
         var source = self
         return .init(bytes: &source, count: MemoryLayout<Self>.stride)
     }
-
+    
+    /// Convert `data` into a `SIMD` strucutre.
+    /// - Parameter data: The data to parse.  Note that the used portion of `data` is removed so that the next bytes can be processed.
     public init?(fromData data: inout Data) {
         if (data.count < MemoryLayout<Self>.stride) {
             return nil
@@ -25,37 +27,11 @@ extension SIMD  {
     
 }
 
-extension SIMD2 : DataRepresentable {}
-extension SIMD3 : DataRepresentable {}
-extension SIMD4 : DataRepresentable {}
-extension SIMD8 : DataRepresentable {}
-extension SIMD16 : DataRepresentable {}
-extension SIMD32 : DataRepresentable {}
-extension SIMD64 : DataRepresentable {}
-
-//extension SIMD where Self.Scalar : FixedWidthInteger {
-//    /// Convert a numeric value to `Data`.
-//    public var dataRepresentation: Data {
-//        var source = self
-//        return .init(bytes: &source, count: MemoryLayout<Self>.stride)
-//    }
-//
-//
-//    /// Initialze a single numeric value from `Data`
-//    public init(fromData data: Data) {
-//        var value: Self = Self.zero
-//        let size = withUnsafeMutableBytes(of: &value, { data.copyBytes(to: $0)} )
-//        assert(size == MemoryLayout.size(ofValue: value))
-//        self = value
-//    }
-//
-//    /// The dataStride for the `DataRepresentable`.
-//    static public var dataStride: Int {
-//        return MemoryLayout< Self >.stride
-//    }
-//}
-
-//extension SIMD3: DataRepresentable   {}
-//extension SIMD2: DataRepresentable {}
-
+extension SIMD2 : DataRepresentable, ArrayToDataRepresentable {}
+extension SIMD3 : DataRepresentable, ArrayToDataRepresentable {}
+extension SIMD4 : DataRepresentable, ArrayToDataRepresentable {}
+extension SIMD8 : DataRepresentable, ArrayToDataRepresentable {}
+extension SIMD16 : DataRepresentable, ArrayToDataRepresentable {}
+extension SIMD32 : DataRepresentable, ArrayToDataRepresentable {}
+extension SIMD64 : DataRepresentable, ArrayToDataRepresentable {}
 

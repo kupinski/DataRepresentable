@@ -18,11 +18,17 @@ extension String: DataRepresentable {
     
     /// Process a string from a data stream
     ///
-    /// This is generally thought of as not safe.
+    /// > Important:  We use null termination to find the end of strings in `Data`.  This is likely both unsafe and may fail in certain rare circumstances.
+    ///
+    /// - Parameter data: The data to read from.  The used portion of `data` is removed from the structure so that subsequent bytes can be read.
     public init?(fromData data: inout Data) {
         let subData = data.prefix(while: {(tst) in tst != 0})
-        self.init(data: subData, encoding: .utf8)
-        // FIXME:  How do I not advance when the initializer returns nil??
-        data = data.advanced(by: subData.count + 1) // +1 to get past the null termination
+        let retString = String(data: subData, encoding: .utf8)
+        if (retString == nil) {
+            return nil
+        } else {
+            data = data.advanced(by: subData.count + 1) // +1 to get past the null termination
+            self = retString!
+        }
     }
 }

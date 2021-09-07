@@ -88,13 +88,13 @@ final class NumericDataTests: XCTestCase {
     
     
     func testStrings() throws {
-        do {
+        do { // Convert a string to Data and back
             let string = "Happy to see you: µ, π, 🧐"
             var data = string.dataRepresentation
             let string2 = String(fromData: &data)
             XCTAssertEqual(string, string2)
         }
-        do {
+        do { // Convert two strings to Data and back.  Check null termination.
             let string1 = "Happy to see you: µ, π, 🧐"
             let string2 = "What's happening?"
             var data = string1.dataRepresentation + string2.dataRepresentation
@@ -103,7 +103,7 @@ final class NumericDataTests: XCTestCase {
             XCTAssertEqual(string1, string3)
             XCTAssertEqual(string2, string4)
         }
-        do {
+        do { // Convert a string and a double to Data and back.
             let string1 = "Happy to see you: µ, π, 🧐"
             let val1 = 123.415
             var data = string1.dataRepresentation + val1.dataRepresentation
@@ -113,8 +113,6 @@ final class NumericDataTests: XCTestCase {
             XCTAssertEqual(val1,val2)
 
         }
-
-
         
     }
     
