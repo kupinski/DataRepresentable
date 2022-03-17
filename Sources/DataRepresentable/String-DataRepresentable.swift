@@ -22,13 +22,15 @@ extension String: DataRepresentable {
     ///
     /// - Parameter data: The data to read from.  The used portion of `data` is removed from the structure so that subsequent bytes can be read.
     public init?(fromData data: inout Data) {
-        let subData = data.prefix(while: {(tst) in tst != 0})
+        let subData = data.prefix(while: {(tst) in tst != Array("\n".utf8)[0]})
         let retString = String(data: subData, encoding: .utf8)
         if (retString == nil) {
             return nil
         } else {
+            // get rid of carriage return if it is in there.
+            let filteredString = retString!.filter{(char) in char != "\r"}
             data = data.advanced(by: subData.count + 1) // +1 to get past the null termination
-            self = retString!
+            self = filteredString
         }
     }
 }
