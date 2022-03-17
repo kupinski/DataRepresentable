@@ -8,12 +8,13 @@
 import Foundation
 
 extension String: DataRepresentable {
-    /// The data representation of a string is done using null terminated UTF 8 strings.
+    /// The data representation of a string is done using  UTF 8 strings.
     ///
-    /// This is generally thought of as not safe.
+    /// Note that the \n for a terminated string must be in the string itself.  This routine does not add it!
+    ///
+    /// No error checking on the conversion of the string to utf8.  So if the user has an emoji in there, this will fail..
     public var dataRepresentation: Data {
-        let z = self.cString(using: .utf8)!
-        return z.dataRepresentation
+        return self.data(using: .utf8)!
     }
     
     /// Process a string from a data stream
