@@ -30,7 +30,7 @@ extension String: DataRepresentable {
         } else {
             // get rid of carriage return if it is in there.
             let filteredString = retString!.filter{(char) in char != "\r"}
-            data = data.advanced(by: subData.count + 1) // +1 to get past the null termination
+            data = data.advanced(by: subData.count) // +1 to get past the null termination
             self = filteredString
         }
     }
