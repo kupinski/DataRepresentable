@@ -88,28 +88,40 @@ final class NumericDataTests: XCTestCase {
     
     
     func testStrings() throws {
+        let string1 = "Happy to see you: µ, π, 🧐"
+        let string2 = "What's happening"
+
         do { // Convert a string to Data and back
-            let string = "Happy to see you: µ, π, 🧐"
-            var data = string.dataRepresentation
-            let string2 = String(fromData: &data)
-            XCTAssertEqual(string, string2)
+            let stringComb = string1 + "\r\n" + string2 + "\r\n"
+            var data = stringComb.dataRepresentation
+            let string1New = String(fromData: &data)
+            let string2New = String(fromData: &data)
+            XCTAssertEqual(string1New, string1)
+            XCTAssertEqual(string2New, string2)
+        }
+        do { // Convert a string to Data and back
+            let stringComb = string1 + "\n" + string2 + "\n"
+            var data = stringComb.dataRepresentation
+            let string1New = String(fromData: &data)
+            let string2New = String(fromData: &data)
+            XCTAssertEqual(string1New, string1)
+            XCTAssertEqual(string2New, string2)
         }
         do { // Convert two strings to Data and back.  Check null termination.
-            let string1 = "Happy to see you: µ, π, 🧐"
-            let string2 = "What's happening?"
             var data = string1.dataRepresentation + string2.dataRepresentation
             let string3 = String(fromData: &data)
             let string4 = String(fromData: &data)
-            XCTAssertEqual(string1, string3)
-            XCTAssertEqual(string2, string4)
+            // strings aren't \n terminated so they will fail to convert from data to string.
+            XCTAssertEqual(string3, nil)
+            XCTAssertEqual(string4, nil)
         }
         do { // Convert a string and a double to Data and back.
-            let string1 = "Happy to see you: µ, π, 🧐"
+            let string2 = string1 + "\r\n"
             let val1 = 123.415
-            var data = string1.dataRepresentation + val1.dataRepresentation
-            let string2 =  String(fromData: &data)
+            var data = string2.dataRepresentation + val1.dataRepresentation
+            let string3 =  String(fromData: &data)
             let val2 =  Double(fromData: &data)
-            XCTAssertEqual(string1, string2)
+            XCTAssertEqual(string1, string3)
             XCTAssertEqual(val1,val2)
 
         }

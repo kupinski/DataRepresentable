@@ -19,7 +19,7 @@ extension String: DataRepresentable {
     
     /// Process a string from a data stream
     ///
-    /// > Important:  We use null termination to find the end of strings in `Data`.  This is likely both unsafe and may fail in certain rare circumstances.
+    /// > Important:  We use a line feed (\n) or a carriage-return followed by a line feed (\r\n) to find the end of strings in `Data`. 
     ///
     /// - Parameter data: The data to read from.  The used portion of `data` is removed from the structure so that subsequent bytes can be read.
     public init?(fromData data: inout Data) {
