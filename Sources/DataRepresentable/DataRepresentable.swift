@@ -13,13 +13,12 @@ import Foundation
 ///
 ///  Anything that is `DataRepresentable` always uses `MemoryLayout<T>.stride` number of bytes.  This helps with compatibility with arrays of `DataRepresentable`.
 public protocol DataRepresentable {
-    /// Create a `DataRepresentable` from `Data`.   Returns `nil` if the conversion fails.  The passed `data` is marked as `inout` because the data that is parsed is then discraded from the front of the `Data` structure.  This allows the next set of elements to be parsed.
-    ///
-    /// > Important:  For `String`s we use null termination to find the end of strings in `Data`.  This is likely both unsafe and may fail in certain rare circumstances.
-    /// 
-    /// > Note: It might be safer to use a separate class for parsing `Data`; one that keeps track of where we are in the data structures instead of removing bytes.
-    init?(fromData data: inout Data)
-    
+    /// Create a `DataRepresentable` from `Data`.   Returns `nil` if the conversion fails.  The passed `atOffset` is marked as `inout` because the offset will be incremented based on the  number of bytes read.
+    init?(fromData data: Data, atOffset: inout Int)
+
+    /// Create a `DataRepresentable` from `Data`.   Returns `nil` if the conversion fails.  Does not keeps track of the offset.
+    init?(fromData data: Data)
+
     /// Convert the object to `Data`
     var dataRepresentation: Data { get }
 
@@ -42,8 +41,8 @@ public protocol DataRepresentable {
 
 extension DataRepresentable {
     public init?(fromURL url: URL) throws {
-        var data = try Data(contentsOf: url)
-        self.init(fromData: &data)
+        let data = try Data(contentsOf: url)
+        self.init(fromData: data)
     }
     
     public func write(toURL url: URL) throws {

@@ -11,36 +11,44 @@ extension Numeric {
 
     
     /// Initialze a single numeric value from `Data`
-    /// - Parameter data: The data to convert into a numeric value.  The used portion of `data` is removed from the structure.
-    public init?(fromData data: inout Data) {
+    /// - Parameter data: The data to convert into a numeric value.
+    public init?(fromData data: Data, atOffset: inout Int) {
         if (data.count < MemoryLayout<Self>.stride) {
             return nil
         }
-        var value: Self = .zero
-        let numBytes = withUnsafeMutableBytes(of: &value, { data.copyBytes(to: $0)} )
-        data = data.advanced(by: numBytes)
-
+        let value: Self = data.extractValue(atOffset: &atOffset)
         self = value
     }
+    
+    /// Initialze a single numeric value from `Data`
+    /// - Parameter data: The data to convert into a numeric value.
+    public init?(fromData data: Data) {
+        if (data.count < MemoryLayout<Self>.stride) {
+            return nil
+        }
+        let value: Self = data.extractValue()
+        self = value
+    }
+
     
 }
 
 // We must do this to all the Numeric types to ensure that they do follow DataRepresentable.  These types can also be represented as an `Array` that is `DataRepresentable`.
-extension Float: DataRepresentable, ArrayToDataRepresentable {}
-extension Double: DataRepresentable, ArrayToDataRepresentable {}
-extension CGFloat: DataRepresentable, ArrayToDataRepresentable {}
+extension Float: DataRepresentable {}
+extension Double: DataRepresentable {}
+extension CGFloat: DataRepresentable {}
 
-extension Int: DataRepresentable, ArrayToDataRepresentable {}
-extension Int64: DataRepresentable, ArrayToDataRepresentable {}
-extension Int32: DataRepresentable, ArrayToDataRepresentable {}
-extension Int16: DataRepresentable, ArrayToDataRepresentable {}
-extension Int8: DataRepresentable, ArrayToDataRepresentable {}
+extension Int: DataRepresentable {}
+extension Int64: DataRepresentable {}
+extension Int32: DataRepresentable {}
+extension Int16: DataRepresentable {}
+extension Int8: DataRepresentable {}
 
-extension UInt: DataRepresentable, ArrayToDataRepresentable {}
-extension UInt64: DataRepresentable, ArrayToDataRepresentable {}
-extension UInt32: DataRepresentable, ArrayToDataRepresentable {}
-extension UInt16: DataRepresentable, ArrayToDataRepresentable {}
-extension UInt8: DataRepresentable, ArrayToDataRepresentable {}
+extension UInt: DataRepresentable {}
+extension UInt64: DataRepresentable {}
+extension UInt32: DataRepresentable {}
+extension UInt16: DataRepresentable {}
+extension UInt8: DataRepresentable {}
 
 
 
