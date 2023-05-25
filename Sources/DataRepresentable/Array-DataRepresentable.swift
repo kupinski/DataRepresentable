@@ -26,13 +26,13 @@ extension Array: DataRepresentable where Element: DataRepresentable {
 
     
     /// Initialize from Data.  Assumes the entire array is made up of `Element`.
-    public init?(fromData data: Data, atOffset: inout Int) {
+    public init(fromData data: Data, atOffset: inout Int) throws {
         let count: Int = data.extractValue(atOffset: &atOffset)
         self = data.extractArray(count: count, atOffset: &atOffset)
     }
     
     /// Initialize from Data.  Assumes the entire array is made up of `Element`.
-    public init?(fromData data: Data) {
+    public init(fromData data: Data) throws {
         let count: Int = data.extractValue()
         let subData = data.subdata(in: MemoryLayout<Int>.stride..<(MemoryLayout<Int>.stride + MemoryLayout<Element>.stride * count))
         self = subData.extractArray(count: count)

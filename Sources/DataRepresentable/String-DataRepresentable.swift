@@ -36,7 +36,7 @@ extension String: DataRepresentable {
     /// Process a string from a data stream
     ///
     /// - Parameter data: The data to read from.  The used portion of `data` is removed from the structure so that subsequent bytes can be read.
-    public init?(fromData data: Data, atOffset: inout Int) {
+    public init(fromData data: Data, atOffset: inout Int) throws {
         let length:Int = data.extractValue(atOffset: &atOffset)
         let encoding = String.Encoding(rawValue: data.extractValue(atOffset: &atOffset))
         let subData = data.subdata(in: atOffset..<(atOffset + length))
@@ -44,14 +44,14 @@ extension String: DataRepresentable {
         if let ret = String(data: subData, encoding: encoding) {
             self = ret
         } else {
-            return nil
+            throw DataRepresentableError.invalidString
         }
     }
     
     /// Process a string from a data stream
     ///
     /// - Parameter data: The data to read from.  The used portion of `data` is removed from the structure so that subsequent bytes can be read.
-    public init?(fromData data: Data) {
+    public init(fromData data: Data) throws {
         let twoInts: [UInt] = data.extractArray(count: 2)
         let count = Int(twoInts[0])
         let enc = String.Encoding(rawValue: twoInts[1])
@@ -60,7 +60,7 @@ extension String: DataRepresentable {
         if let ret = String(data: subData, encoding: enc) {
             self = ret
         } else {
-            return nil
+            throw DataRepresentableError.invalidString
         }
     }
 
