@@ -162,7 +162,7 @@ final class NumericDataTests: XCTestCase {
     func testFileCompression() throws {
         let rawData = Array(repeating: 1.0, count: 1_000_000)
         let fileName = "/tmp/\(UUID().uuidString).rawData"
-        let url = URL(filePath: fileName)
+        let url = URL(fileURLWithPath: fileName)
         print("Writing file")
         try rawData.write(toURL: url)
         print("Reading file")
