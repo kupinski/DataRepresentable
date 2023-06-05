@@ -11,11 +11,11 @@ import Compression
 extension Data {
     
     public func compress(using: NSData.CompressionAlgorithm = .lzfse) throws -> Data {
-        try (self as NSData).compressed(using: .lzfse) as Data
+        try (self as NSData).compressed(using: .zlib) as Data
     }
     
     public func unCompress(using: NSData.CompressionAlgorithm = .lzfse) throws -> Data {
-        try(self as NSData).decompressed(using: .lzfse) as Data
+        try(self as NSData).decompressed(using: .zlib) as Data
     }
     
 
