@@ -17,25 +17,40 @@ import Foundation
 /// If an array is one of `ArrayToDataRepresentable`, then the array itself is `DataRepresentable`
 extension Array: DataRepresentable where Element: DataRepresentable {
     /// Convert an array to `Data`
-    public var dataRepresentation: Data {
+    public var continuousData: Data {
         var count = self.count
         let data1 = Data(bytes: &count, count: MemoryLayout<Int>.stride)
         let data2 = Data(bytes: self, count: MemoryLayout<Element>.stride * self.count)
         return data1 + data2
     }
-
     
+    public var dataRepresentation: Data {
+        var count = self.count
+        let data1 = Data(bytes: &count, count: MemoryLayout<Int>.stride)
+        let data2 = self.reduce(Data()){(old, nw) in old + nw.dataRepresentation}
+        return data1 + data2
+    }
+
     /// Initialize from Data.  Assumes the entire array is made up of `Element`.
     public init(fromData data: Data, atOffset: inout Int) throws {
+        let count: Int = data.extractValue(atOffset: &atOffset)
+        self = []
+        self.reserveCapacity(count)
+        for _ in 0..<count {
+            try self.append(Element(fromData: data, atOffset: &atOffset))
+        }
+    }
+    
+    /// Initialize from Data.  Assumes the entire array is made up of `Element`.
+    public init(fromContinuousData data: Data, atOffset: inout Int) throws {
         let count: Int = data.extractValue(atOffset: &atOffset)
         self = data.extractArray(count: count, atOffset: &atOffset)
     }
     
     /// Initialize from Data.  Assumes the entire array is made up of `Element`.
-    public init(fromData data: Data) throws {
-        let count: Int = data.extractValue()
-        let subData = data.subdata(in: MemoryLayout<Int>.stride..<(MemoryLayout<Int>.stride + MemoryLayout<Element>.stride * count))
-        self = subData.extractArray(count: count)
+    public init(fromContinuousData data: Data) throws {
+        var offset = 0
+        try self.init(fromContinuousData: data, atOffset: &offset)
     }
 
 }

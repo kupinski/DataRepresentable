@@ -39,6 +39,25 @@ final class NumericDataTests: XCTestCase {
         XCTAssertEqual([Int8]([127, -127, 12, -12]), dataToInt8)
     }
     
+    func testArraysContinuous() throws {
+        let intAData = [0, 1, 2, 3, 10000, -1000, 5123112].continuousData
+        let dataToIntA = try [Int](fromContinuousData: intAData)
+        XCTAssertEqual([0, 1, 2, 3, 10000, -1000, 5123112], dataToIntA)
+
+        let doubleAData = [0.13, 12312541.23, 1251e-10, 0.0523, Double.infinity].continuousData
+        let dataToDoubleA = try [Double](fromContinuousData: doubleAData)
+        XCTAssertEqual([0.13, 12312541.23, 1251e-10, 0.0523, Double.infinity], dataToDoubleA)
+        
+        let floatAData = [Float]([0.13, 12312541.23, 1251e-10, 0.0523, Float.infinity]).continuousData
+        let dataToFloatA = try [Float](fromContinuousData: floatAData)
+        XCTAssertEqual([Float]([0.13, 12312541.23, 1251e-10, 0.0523, Float.infinity]), dataToFloatA)
+        
+        let int8Data = [Int8]([127, -127, 12, -12]).continuousData
+        let dataToInt8 = try [Int8](fromContinuousData: int8Data)
+        XCTAssertEqual([Int8]([127, -127, 12, -12]), dataToInt8)
+    }
+
+    
     func testSIMD() throws {
         do {
             let simdData = SIMD3<Double>(1,-100,312).dataRepresentation
@@ -160,14 +179,22 @@ final class NumericDataTests: XCTestCase {
     }
     
     func testFileCompression() throws {
-        let rawData = Array(repeating: 1.0, count: 1_000_000)
         let fileName = "/tmp/\(UUID().uuidString).rawData"
         let url = URL(fileURLWithPath: fileName)
+
+        let rawData = Array(repeating: 1.0, count: 1_000_000)
+        
+        let data = try rawData.continuousData.compress()
+        
         print("Writing file")
-        try rawData.write(toURL: url)
+        try data.write(to: url)
+        
         print("Reading file")
-        let newData = try [Double](fromURL: url)
-        XCTAssertEqual(newData, rawData)
+        let newData = try Data(contentsOf: url).unCompress()
+        let newArray = try [Double](fromContinuousData: newData)
+        
+        
+        XCTAssertEqual(newArray, rawData)
         
         let attr = try FileManager.default.attributesOfItem(atPath: fileName)
         let size = attr[.size] as! Int
@@ -177,5 +204,16 @@ final class NumericDataTests: XCTestCase {
     }
 
     
+
+    func testDictionaries() throws {
+        let dict = ["Hello": 23.1,
+                    "Goodbye": 42.1,
+                    "So long": 511.12]
+        let data = dict.dataRepresentation
+        let newDict = try [String: Double](fromData: data)
+        
+        print(newDict)
+        XCTAssertEqual(newDict, dict)
+    }
     
 }

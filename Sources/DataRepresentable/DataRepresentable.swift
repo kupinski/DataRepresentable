@@ -41,37 +41,10 @@ public protocol DataRepresentable {
 
     /// Convert the object to `Data`
     var dataRepresentation: Data { get }
-
-    
-    /// Create a `DataRepresentable` from a file.
-    ///
-    /// Has a default implementation.  Assumes that the entire file is meant for the `DataRepresentable`.  Any extra bytes in the file are ignored.
-    /// - Parameter url: The file `URL` to open and read into a `Data` structure.
-    init?(fromURL url: URL) throws
-    
-    /// Write the `DataRepresentable` to a file.
-    ///
-    /// Has a default implementation.
-    /// - Parameter url: The `URL` to write the file to.
-    func write(toURL url: URL) throws
-
-
 }
 
 
 extension DataRepresentable {
-    public init?(fromURL url: URL) throws {
-        let data = try Data(contentsOf: url)
-        let uncompressed = try(data as NSData).decompressed(using: .lzfse) as Data
-        
-        try self.init(fromData: uncompressed)
-    }
-    
-    public func write(toURL url: URL) throws {
-        let compressedData = try (self.dataRepresentation as NSData).compressed(using: .lzfse)
-        try compressedData.write(to: url)
-    }
-    
     public var dataRepresentation: Data {
         var source = self
         return .init(bytes: &source, count: MemoryLayout<Self>.stride)
@@ -89,14 +62,8 @@ extension DataRepresentable {
     }
     
     public init(fromData data: Data) throws {
-        if (data.count < MemoryLayout<Self>.stride) {
-            throw DataRepresentableError.notEnoughBytes
-        }
-        let value: Self = data.extractValue()
-        self = value
-        if (type(of: self) is AnyClass) {
-            throw DataRepresentableError.classRepresentationNotSpecified
-        }
+        var offset = 0
+        try self.init(fromData: data, atOffset: &offset)
     }
     
 }

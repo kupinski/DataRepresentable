@@ -9,6 +9,16 @@ import Foundation
 import Compression
     
 extension Data {
+    
+    public func compress(using: NSData.CompressionAlgorithm = .lzfse) throws -> Data {
+        try (self as NSData).compressed(using: .lzfse) as Data
+    }
+    
+    public func unCompress(using: NSData.CompressionAlgorithm = .lzfse) throws -> Data {
+        try(self as NSData).decompressed(using: .lzfse) as Data
+    }
+    
+
 
     public func extractArray<T>(count: Int, atOffset: inout Int) -> [T] {
         let subData = self.subdata(in: atOffset..<(atOffset + MemoryLayout<T>.stride * count))

@@ -48,20 +48,4 @@ extension String: DataRepresentable {
         }
     }
     
-    /// Process a string from a data stream
-    ///
-    /// - Parameter data: The data to read from.  The used portion of `data` is removed from the structure so that subsequent bytes can be read.
-    public init(fromData data: Data) throws {
-        let twoInts: [UInt] = data.extractArray(count: 2)
-        let count = Int(twoInts[0])
-        let enc = String.Encoding(rawValue: twoInts[1])
-        
-        let subData = data.subdata(in: (MemoryLayout<UInt>.stride * 2)..<(count + MemoryLayout<UInt>.stride * 2))
-        if let ret = String(data: subData, encoding: enc) {
-            self = ret
-        } else {
-            throw DataRepresentableError.invalidString
-        }
-    }
-
 }
