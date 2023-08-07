@@ -202,6 +202,22 @@ final class NumericDataTests: XCTestCase {
         print("Compression = \((1.0 - (Double(size) / Double(rawData.count))) * 100.0) %")
 
     }
+    
+    func testOptionals() throws {
+        let z: Int? = 12
+        let q: Int? = nil
+        
+        let zData = z.dataRepresentation
+        let qData = q.dataRepresentation
+        
+        var offset: Int = 0
+        let zNew = try Int?(fromData: zData, atOffset: &offset)
+        XCTAssertEqual(zNew, z)
+        
+        var offset1: Int = 0
+        let qNew = try Int?(fromData: qData, atOffset: &offset1)
+        XCTAssertEqual(qNew,q)
+    }
 
     
 

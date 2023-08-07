@@ -13,7 +13,7 @@ extension Optional where Wrapped: DataRepresentable {
         if let z = self {
             return(true.dataRepresentation + z.dataRepresentation)
         } else {
-            return(false.description.dataRepresentation)
+            return(false.dataRepresentation)
         }
     }
 
